@@ -2,4 +2,10 @@
     <string name="app_name">Cocktail Bar</string>
     <string name="my_cocktails">My cocktails</string>
     <string name="add_your_first_cocktail_here">Add your first cocktail here</string>
+    <string name="title">Title</string>
+    <string name="cocktail_name">Cocktail name</string>
+    <string name="add_title">Add title</string>
+    <string name="description">Description</string>
+    <string name="optional_field">Optional field</string>
+    <string name="recipe">Recipe</string>
 </resources>

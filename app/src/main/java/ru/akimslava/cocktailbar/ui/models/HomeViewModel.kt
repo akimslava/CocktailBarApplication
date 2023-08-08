@@ -1,5 +1,6 @@
 package ru.akimslava.cocktailbar.ui.models
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,8 +21,27 @@ class HomeViewModel(
                 initialValue = HomeUiState(),
             )
 
-    val currentCocktail: Cocktail? = null
+    val currentCocktail = mutableStateOf(
+        Cocktail(
+            0, 0, "", "", "",
+        )
+    )
 
+    fun setCurrentCocktailTitle(title: String) {
+        currentCocktail.value = currentCocktail.value.copy(title = title)
+    }
+
+    fun setCurrentCocktailDescription(description: String) {
+        currentCocktail.value = currentCocktail.value.copy(
+            description = description,
+        )
+    }
+
+    fun setCurrentCocktailRecipe(recipe: String) {
+        currentCocktail.value = currentCocktail.value.copy(
+            recipe = recipe,
+        )
+    }
 
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
