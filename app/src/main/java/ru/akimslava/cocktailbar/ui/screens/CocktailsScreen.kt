@@ -1,9 +1,10 @@
 package ru.akimslava.cocktailbar.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -11,31 +12,29 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import ru.akimslava.cocktailbar.R
 import ru.akimslava.cocktailbar.data.Cocktail
 import ru.akimslava.cocktailbar.ui.theme.CocktailBarTheme
+import java.io.File
 
 
 @Composable
 fun CocktailsScreen(
     cocktails: List<Cocktail>,
-    onClick: () -> Unit = {},
+    onClick: (Cocktail) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -48,13 +47,7 @@ fun CocktailsScreen(
                 top = 24.dp,
                 bottom = 24.dp,
             ),
-            style = TextStyle(
-                fontSize = 36.sp,
-                fontFamily = FontFamily(Font(R.font.didact_gothic)),
-                fontWeight = FontWeight(400),
-                color = Color(0xFF313131),
-                textAlign = TextAlign.Right,
-            ),
+            style = MaterialTheme.typography.headlineLarge,
         )
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
@@ -67,25 +60,44 @@ fun CocktailsScreen(
                 )
             }
         }
+//        Box {
+//            Card(
+//                shape = RoundedCornerShape(
+//                    topStart = 80.dp,
+//                    topEnd = 80.dp,
+//                ),
+//                modifier = Modifier.height(62.dp),
+//                elevation = CardDefaults.cardElevation(
+//                    defaultElevation = 8.dp,
+//                )
+//            ) {}
+//        }
     }
 }
 
 @Composable
 private fun CocktailView(
     cocktail: Cocktail,
-    onClick: () -> Unit = {},
+    onClick: (Cocktail) -> Unit = {},
 ) {
     Card(
         modifier = Modifier
             .size(160.dp)
             .padding(4.dp)
-            .clickable { onClick() },
+            .clickable { onClick(cocktail) },
         shape = RoundedCornerShape(54.dp),
     ) {
-        Box() {
-            Image(
-                painter = painterResource(id = R.drawable.summer_holidays_1),
-                contentDescription = cocktail.title,
+        Box {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(File(cocktail.picture.toString()))
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
+                placeholder = painterResource(id = R.drawable.ic_image_search),
+                error = painterResource(id = R.drawable.ic_no_image),
+                modifier = Modifier.height(329.dp)
+                    .fillMaxWidth(),
                 contentScale = ContentScale.Crop,
             )
             Text(
@@ -94,13 +106,7 @@ private fun CocktailView(
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 34.dp),
                 maxLines = 1,
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontFamily = FontFamily(Font(R.font.didact_gothic)),
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFFFFFFFF),
-                    textAlign = TextAlign.Right,
-                ),
+                style = MaterialTheme.typography.titleMedium,
             )
         }
     }
@@ -113,11 +119,14 @@ private fun CocktailView(
 @Composable
 private fun CocktailsScreenPreview() {
     CocktailBarTheme {
-        CocktailsScreen(listOf(
-            Cocktail(0, 0, "Title of Cocktail", "", ""),
-            Cocktail(0, 0, "Title of Cocktail", "", ""),
-            Cocktail(0, 0, "Title of Cocktail", "", ""),
-        ))
+        CocktailsScreen(
+            cocktails = listOf(
+                Cocktail(0, null, "Title of Cocktail", "", mutableListOf(), ""),
+                Cocktail(0, null, "Title of Cocktail", "", mutableListOf(), ""),
+                Cocktail(0,  null, "Title of Cocktail", "", mutableListOf(), ""),
+            ),
+            onClick = {},
+        )
     }
 }
 
@@ -125,6 +134,6 @@ private fun CocktailsScreenPreview() {
 @Composable
 private fun CocktailViewPreview() {
     CocktailBarTheme {
-        CocktailView(Cocktail(0, 0, "Title of Cocktail", "", ""))
+        CocktailView(Cocktail(0,  null, "Title of Cocktail", "", mutableListOf(), ""))
     }
 }
