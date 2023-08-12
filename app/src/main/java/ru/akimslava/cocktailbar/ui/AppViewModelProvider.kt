@@ -12,7 +12,7 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             HomeViewModel(
-                inventoryApplication().container.cocktailsRepository,
+                cocktailsApplication().container.cocktailsRepository,
             )
         }
     }
@@ -22,7 +22,7 @@ object AppViewModelProvider {
  * Extension function to queries for [Application] object and returns an instance of
  * [InventoryApplication].
  */
-fun CreationExtras.inventoryApplication(): CocktailBarApplication = (
+fun CreationExtras.cocktailsApplication(): CocktailBarApplication = (
         this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]
                 as CocktailBarApplication
         )

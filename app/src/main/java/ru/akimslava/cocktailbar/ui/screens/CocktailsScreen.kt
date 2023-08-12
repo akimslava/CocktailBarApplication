@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import ru.akimslava.cocktailbar.R
-import ru.akimslava.cocktailbar.data.Cocktail
+import ru.akimslava.cocktailbar.domain.Cocktail
 import ru.akimslava.cocktailbar.ui.theme.CocktailBarTheme
 import java.io.File
 
@@ -60,18 +60,6 @@ fun CocktailsScreen(
                 )
             }
         }
-//        Box {
-//            Card(
-//                shape = RoundedCornerShape(
-//                    topStart = 80.dp,
-//                    topEnd = 80.dp,
-//                ),
-//                modifier = Modifier.height(62.dp),
-//                elevation = CardDefaults.cardElevation(
-//                    defaultElevation = 8.dp,
-//                )
-//            ) {}
-//        }
     }
 }
 

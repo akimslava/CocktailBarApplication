@@ -15,4 +15,7 @@
     <string name="add_ingredient">Add ingredient</string>
     <string name="add">Add</string>
     <string name="ingredient_s_name">Ingredient\'s name</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="delete_cocktail_agreemant">Are you sure you want to remove the %s?</string>
 </resources>

@@ -21,7 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import ru.akimslava.cocktailbar.R
-import ru.akimslava.cocktailbar.data.Cocktail
+import ru.akimslava.cocktailbar.domain.Cocktail
 import ru.akimslava.cocktailbar.ui.models.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

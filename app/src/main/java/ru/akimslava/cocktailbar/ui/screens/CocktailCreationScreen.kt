@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -229,7 +230,8 @@ private fun ImageSelect(
             contentDescription = null,
             placeholder = painterResource(id = R.drawable.ic_image_search),
             error = painterResource(id = R.drawable.ic_no_image),
-            modifier = Modifier.height(204.dp)
+            modifier = Modifier
+                .height(204.dp)
                 .width(216.dp)
                 .fillMaxWidth()
                 .clickable {
@@ -373,8 +375,13 @@ fun AddIngredientDialog(
                 }
                 OutlinedButton(
                     onClick = exit,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(top = 8.dp),
+                    border = BorderStroke(
+                        width = 1.dp,
+                        color = colorResource(id = R.color.light_blue),
+                    )
                 ) {
                     Text(
                         text = stringResource(id = R.string.cancel),

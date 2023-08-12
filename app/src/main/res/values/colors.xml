@@ -8,4 +8,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="light_blue">#FF4B97FF</color>
+    <color name="ingredients_divider_color">#FF79747E</color>
 </resources>

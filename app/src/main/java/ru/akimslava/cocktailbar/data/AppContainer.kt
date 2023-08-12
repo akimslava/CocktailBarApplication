@@ -1,6 +1,7 @@
 package ru.akimslava.cocktailbar.data
 
 import android.content.Context
+import ru.akimslava.cocktailbar.domain.CocktailsRepository
 
 interface AppContainer {
     val cocktailsRepository: CocktailsRepository

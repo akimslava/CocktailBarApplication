@@ -1,4 +1,4 @@
-package ru.akimslava.cocktailbar.data
+package ru.akimslava.cocktailbar.domain
 
 import kotlinx.coroutines.flow.Flow
 

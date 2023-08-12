@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import ru.akimslava.cocktailbar.data.Cocktail
-import ru.akimslava.cocktailbar.data.CocktailsRepository
+import ru.akimslava.cocktailbar.domain.Cocktail
+import ru.akimslava.cocktailbar.domain.CocktailsRepository
 
 class HomeViewModel(
     private val cocktailsRepository: CocktailsRepository,
@@ -94,6 +94,12 @@ class HomeViewModel(
     fun saveCocktail() {
         viewModelScope.launch {
             cocktailsRepository.insertItem(currentCocktail.value)
+        }
+    }
+
+    fun deleteCocktail() {
+        viewModelScope.launch {
+            cocktailsRepository.deleteItem(currentCocktail.value)
         }
     }
 
