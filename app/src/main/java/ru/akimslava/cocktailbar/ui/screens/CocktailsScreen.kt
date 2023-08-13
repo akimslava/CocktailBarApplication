@@ -66,7 +66,7 @@ fun CocktailsScreen(
 @Composable
 private fun CocktailView(
     cocktail: Cocktail,
-    onClick: (Cocktail) -> Unit = {},
+    onClick: (Cocktail) -> Unit,
 ) {
     Card(
         modifier = Modifier
@@ -122,6 +122,16 @@ private fun CocktailsScreenPreview() {
 @Composable
 private fun CocktailViewPreview() {
     CocktailBarTheme {
-        CocktailView(Cocktail(0,  null, "Title of Cocktail", "", mutableListOf(), ""))
+        CocktailView(
+            cocktail = Cocktail(
+                id = 0,
+                picture = null,
+                title = "Title of Cocktail",
+                description = "",
+                ingredients = mutableListOf(),
+                recipe = "",
+            ),
+            onClick = {},
+        )
     }
 }

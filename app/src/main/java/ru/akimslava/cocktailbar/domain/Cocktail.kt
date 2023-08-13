@@ -1,11 +1,10 @@
 package ru.akimslava.cocktailbar.domain
 
-import android.net.Uri
 import ru.akimslava.cocktailbar.data.CocktailEntity
 
 data class Cocktail(
     val id: Int = 0,
-    val picture: Uri? = null,
+    val picture: String? = null,
     val title: String = "",
     val description: String = "",
     val ingredients: MutableList<String> = mutableListOf(),

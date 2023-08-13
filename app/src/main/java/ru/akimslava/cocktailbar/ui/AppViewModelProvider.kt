@@ -1,11 +1,13 @@
 package ru.akimslava.cocktailbar.ui
 
-import android.app.Application
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import ru.akimslava.cocktailbar.CocktailBarApplication
+import ru.akimslava.cocktailbar.domain.Cocktail
+import ru.akimslava.cocktailbar.ui.models.CocktailCreationViewModel
 import ru.akimslava.cocktailbar.ui.models.HomeViewModel
 
 object AppViewModelProvider {
@@ -16,12 +18,15 @@ object AppViewModelProvider {
             )
         }
     }
+    @Suppress("UNCHECKED_CAST")
+    class CocktailCreationFactory(
+        private val cocktail: Cocktail
+    ) : ViewModelProvider.NewInstanceFactory() {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T =
+            CocktailCreationViewModel(cocktail) as T
+    }
 }
 
-/**
- * Extension function to queries for [Application] object and returns an instance of
- * [InventoryApplication].
- */
 fun CreationExtras.cocktailsApplication(): CocktailBarApplication = (
         this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]
                 as CocktailBarApplication

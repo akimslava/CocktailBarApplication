@@ -1,11 +1,16 @@
 package ru.akimslava.cocktailbar.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import ru.akimslava.cocktailbar.domain.Cocktail
 import ru.akimslava.cocktailbar.ui.AppViewModelProvider
 import ru.akimslava.cocktailbar.ui.models.HomeViewModel
 import ru.akimslava.cocktailbar.ui.screens.CocktailCreationScreen
@@ -42,7 +47,11 @@ fun NavHost(
         cocktailInformationScreenComposable(
             navGraphBuilder = this,
             navController = navController,
-            viewModel = viewModel,
+            cocktail = viewModel.currentCocktail,
+            deleteCocktail = {
+                viewModel.setCocktail(it)
+                viewModel.deleteCocktail()
+            },
         )
     }
 }
@@ -56,16 +65,13 @@ private fun homeScreenComposable(
         HomeScreen(
             viewModel = viewModel,
             onButtonClick = {
-                viewModel.unselectCocktail()
                 navController.navigate(
-                    route = CocktailScreens.CreationScreen.name,
+                    route = "${CocktailScreens.CreationScreen.name}/0",
                 )
             },
             onCocktailClick = {
-                viewModel.selectCocktail(it)
-                navController.navigate(
-                    route = CocktailScreens.CocktailScreen.name,
-                )
+                viewModel.setCocktail(it)
+                navController.navigate(route = CocktailScreens.CocktailScreen.name)
             },
         )
     }
@@ -76,11 +82,36 @@ private fun creationScreenComposable(
     navController: NavHostController,
     viewModel: HomeViewModel,
 ) {
-    navGraphBuilder.composable(route = CocktailScreens.CreationScreen.name) {
+    navGraphBuilder.composable(
+        route = "${CocktailScreens.CreationScreen.name}/{id}",
+        arguments = listOf(
+            navArgument("id") {
+                type = NavType.IntType
+            }
+        )
+    ) { navBackStackEntry ->
+        val cocktailId = navBackStackEntry.arguments?.getInt("id")
         CocktailCreationScreen(
-            viewModel = viewModel,
-            onCancelClicked = {
-                viewModel.cancelUpdates()
+            viewModel = viewModel(
+                factory = AppViewModelProvider.CocktailCreationFactory(
+                    cocktail = if (cocktailId == 0) {
+                        Cocktail()
+                    } else {
+                        viewModel.homeUiState.collectAsState()
+                            .value.cocktailsList.find { it.id == cocktailId }
+                            ?: Cocktail()
+                    },
+                ),
+            ),
+            onSaveClick = {
+                viewModel.setCocktail(it)
+                if (it.id == 0) {
+                    viewModel.saveCocktail()
+                } else {
+                    viewModel.updateCocktail()
+                }
+            },
+            onCancelClick = {
                 navController.navigateUp()
             },
         )
@@ -90,21 +121,22 @@ private fun creationScreenComposable(
 private fun cocktailInformationScreenComposable(
     navGraphBuilder: NavGraphBuilder,
     navController: NavHostController,
-    viewModel: HomeViewModel,
+    cocktail: MutableState<Cocktail>,
+    deleteCocktail: (Cocktail) -> Unit,
 ) {
     navGraphBuilder.composable(route = CocktailScreens.CocktailScreen.name) {
         CocktailInformationScreen(
-            cocktail = viewModel.currentCocktail.value,
+            cocktail = cocktail.value,
             onEditClick = {
                 navController.navigate(
-                    route = CocktailScreens.CreationScreen.name,
+                    route = "${CocktailScreens.CreationScreen.name}/" +
+                            "${cocktail.value.id}",
                 )
             },
             onBackPressed = {
-                viewModel.unselectCocktail()
                 navController.navigateUp()
             },
-            deleteCocktail = { viewModel.deleteCocktail() },
+            deleteCocktail = deleteCocktail,
             navigateUp = navController::navigateUp,
         )
     }

@@ -30,12 +30,14 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -55,27 +57,33 @@ import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import ru.akimslava.cocktailbar.R
-import ru.akimslava.cocktailbar.ui.models.HomeViewModel
+import ru.akimslava.cocktailbar.domain.Cocktail
+import ru.akimslava.cocktailbar.ui.models.CocktailCreationViewModel
 import ru.akimslava.cocktailbar.ui.theme.CocktailBarTheme
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CocktailCreationScreen(
-    viewModel: HomeViewModel,
-    onCancelClicked: () -> Unit = {},
+    viewModel: CocktailCreationViewModel,
+    onSaveClick: (Cocktail) -> Unit,
+    onCancelClick: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val focusRequester: FocusRequester = remember { FocusRequester() }
     val openDialog = remember { mutableStateOf(false) }
-    if (!viewModel.isCocktailSelected) {
-        viewModel.dropCurrentCocktail()
-        viewModel.selectCocktail(viewModel.currentCocktail.value)
-    }
     if (openDialog.value) {
+        val ingredient = viewModel.ingredient
         AddIngredientDialog(
-            viewModel = viewModel,
-            onClose = {
+            inputText = ingredient,
+            onChangeInputText = viewModel::setIngredient,
+            isError = viewModel.triedAdd.value && (
+                    ingredient.value.isBlank() ||
+                    ingredient.value.length > 30
+                ),
+            onAddClick = viewModel::addIngredient,
+            closeDialog = {
+                viewModel.dropIngredient()
                 openDialog.value = false
             },
         )
@@ -92,20 +100,20 @@ fun CocktailCreationScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ImageSelect(
-            picture = viewModel.currentCocktail.value.picture,
-            onUpload = viewModel::setUri,
+            picture = viewModel.cocktail.value.picture?.toUri(),
+            onUpload = viewModel::setPicture,
         )
         OutlinedTextField(
-            value = viewModel.currentCocktail.value.title,
+            value = viewModel.cocktail.value.title,
             onValueChange = viewModel::setTitle,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 20.dp)
-                .focusRequester(focusRequester),
+                .focusRequester(focusRequester = focusRequester),
             label = { Text(text = stringResource(R.string.title)) },
             placeholder = { Text(text = stringResource(R.string.cocktail_name)) },
             supportingText = { Text(text = stringResource(R.string.add_title)) },
-            isError = viewModel.currentCocktail.value.title.isBlank(),
+            isError = viewModel.cocktail.value.title.isBlank(),
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next,
             ),
@@ -113,7 +121,7 @@ fun CocktailCreationScreen(
             singleLine = true,
         )
         OutlinedTextField(
-            value = viewModel.currentCocktail.value.description,
+            value = viewModel.cocktail.value.description,
             onValueChange = viewModel::setDescription,
             modifier = Modifier
                 .fillMaxWidth()
@@ -127,12 +135,12 @@ fun CocktailCreationScreen(
             ),
         )
         IngredientsLine(
-            ingredients = viewModel.currentCocktail.value.ingredients,
+            cocktail = viewModel.cocktail,
             onDeleteClick = viewModel::removeIngredient,
             onAddClick = { openDialog.value = true },
         )
         OutlinedTextField(
-            value = viewModel.currentCocktail.value.recipe,
+            value = viewModel.cocktail.value.recipe,
             onValueChange = viewModel::setRecipe,
             modifier = Modifier
                 .fillMaxWidth()
@@ -147,8 +155,8 @@ fun CocktailCreationScreen(
         Button(
             onClick = {
                 if (viewModel.isCocktailDataCorrect()) {
-                    viewModel.saveCocktail()
-                    onCancelClicked()
+                    onSaveClick(viewModel.cocktail.value)
+                    onCancelClick()
                 } else {
                     focusRequester.requestFocus()
                 }
@@ -166,7 +174,7 @@ fun CocktailCreationScreen(
             )
         }
         OutlinedButton(
-            onClick = onCancelClicked,
+            onClick = onCancelClick,
             modifier = Modifier
                 .padding(
                     top = 8.dp,
@@ -258,33 +266,42 @@ fun saveImageToInternalStorage(context: Context, uri: Uri) {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun IngredientsLine(
-    ingredients: List<String>,
+    cocktail: MutableState<Cocktail>,
     onDeleteClick: (String) -> Unit,
     onAddClick: () -> Unit,
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-    ) {
+    val ingredients = cocktail.value.ingredients
+    if (ingredients.isEmpty()) {
+        Row(
+            modifier = Modifier.fillMaxWidth()
+                .padding(bottom = 24.dp),
+        ) {
+            AddIngredientButton(onAddClick = onAddClick)
+        }
+    } else {
         FlowRow(
-            modifier = Modifier.padding(
-                bottom = 24.dp,
-                end = 24.dp,
-            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 24.dp),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             repeat(ingredients.size) {
-                IngredientView(
-                    ingredient = ingredients[it],
-                    onDeleteClick = onDeleteClick,
-                )
+                if (it == ingredients.lastIndex) {
+                    LastIngredientAndAddButton(
+                        ingredient = ingredients[it],
+                        onDeleteClick = onDeleteClick,
+                        onAddClick = onAddClick,
+                    )
+                } else {
+                    IngredientView(
+                        ingredient = ingredients[it],
+                        onDeleteClick = onDeleteClick,
+                        modifier = Modifier.padding(end = 4.dp)
+                    )
+                }
             }
         }
-        Image(
-            painter = painterResource(id = R.drawable.ic_add),
-            contentDescription = stringResource(id = R.string.add_ingredient),
-            modifier = Modifier
-                .clickable { onAddClick() }
-                .padding(top = 4.dp),
-        )
     }
 }
 
@@ -292,47 +309,82 @@ fun IngredientsLine(
 private fun IngredientView(
     ingredient: String,
     onDeleteClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     OutlinedCard(
         shape = RoundedCornerShape(10.dp),
-        modifier = Modifier.padding(2.dp),
+        modifier = modifier.padding(2.dp),
     ) {
         Row(
-            modifier = Modifier.padding(vertical = 3.dp),
+            modifier = Modifier.padding(
+                vertical = 3.dp,
+                horizontal = 10.dp,
+            ),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
         ) {
             Text(
                 text = ingredient,
                 modifier = Modifier.padding(
-                    start = 10.dp,
                     end = 4.dp,
                 ),
             )
-            Image(
-                modifier = Modifier
-                    .size(16.dp)
-                    .padding(end = 10.dp)
-                    .clickable { onDeleteClick(ingredient) },
-                painter = painterResource(id = R.drawable.frame__1_),
-                contentDescription = null,
-                contentScale = ContentScale.None,
-            )
+            IconButton(
+                modifier = Modifier.size(16.dp),
+                onClick = { onDeleteClick(ingredient) },
+            ) {
+                Image(
+                    modifier = Modifier
+                        .size(16.dp),
+//                        .clickable { onDeleteClick(ingredient) },
+                    painter = painterResource(id = R.drawable.frame__1_),
+                    contentDescription = null,
+                )
+            }
         }
     }
+}
+
+@Composable
+private fun LastIngredientAndAddButton(
+    ingredient: String,
+    onDeleteClick: (String) -> Unit,
+    onAddClick: () -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IngredientView(
+            ingredient = ingredient,
+            onDeleteClick = onDeleteClick,
+            modifier = Modifier.padding(end = 6.dp),
+        )
+        AddIngredientButton(onAddClick = onAddClick)
+    }
+}
+
+@Composable
+private fun AddIngredientButton(onAddClick: () -> Unit) {
+    Image(
+        painter = painterResource(id = R.drawable.ic_add),
+        contentDescription = stringResource(id = R.string.add_ingredient),
+        modifier = Modifier
+            .size(24.dp)
+            .clickable { onAddClick() },
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddIngredientDialog(
-    viewModel: HomeViewModel,
-    onClose: () -> Unit,
+    inputText: MutableState<String>,
+    onChangeInputText: (String) -> Unit,
+    isError: Boolean,
+    onAddClick: () -> Boolean,
+    closeDialog: () -> Unit,
 ) {
-    val exit = {
-        viewModel.dropIngredient()
-        onClose()
-    }
-    Dialog(onDismissRequest = exit) {
+    val focusRequester: FocusRequester = remember { FocusRequester() }
+    Dialog(onDismissRequest = closeDialog) {
         Card(
             modifier = Modifier.size(372.dp),
             shape = RoundedCornerShape(40.dp),
@@ -347,26 +399,35 @@ fun AddIngredientDialog(
                     style = MaterialTheme.typography.headlineMedium,
                 )
                 OutlinedTextField(
-                    value = viewModel.ingredient.value,
-                    onValueChange = viewModel::setIngredient,
+                    value = inputText.value,
+                    onValueChange = onChangeInputText,
                     modifier = Modifier
+                        .fillMaxWidth()
                         .padding(vertical = 24.dp)
-                        .fillMaxWidth(),
-                    label = { Text(text = stringResource(R.string.ingredient_s_name)) },
-                    supportingText = { Text(text = stringResource(id = R.string.add_title)) },
-                    isError = viewModel.ingredient.value.isBlank()
-                            || viewModel.ingredient.value.length > 30,
+                        .focusRequester(focusRequester = focusRequester),
+                    label = {
+                        Text(text = stringResource(R.string.ingredient_s_name))
+                    },
+                    supportingText = {
+                        Text(text = stringResource(id = R.string.add_title))
+                    },
+                    isError = isError,
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Done,
                     ),
                 )
                 Button(
                     onClick = {
-                        if (viewModel.addIngredient()) {
-                            exit()
+                        if (onAddClick()) {
+                            closeDialog()
+                        } else {
+                            focusRequester.requestFocus()
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(id = R.color.light_blue),
+                    ),
                 ) {
                     Text(
                         text = stringResource(R.string.add),
@@ -374,7 +435,7 @@ fun AddIngredientDialog(
                     )
                 }
                 OutlinedButton(
-                    onClick = exit,
+                    onClick = closeDialog,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp),
@@ -410,9 +471,29 @@ private fun IngredientViewPreview() {
 private fun IngredientsLinePreview() {
     CocktailBarTheme {
         IngredientsLine(
-            ingredients = listOf("One", "Two", "Three", "Four Five"),
+            remember {
+                mutableStateOf(
+                    Cocktail(
+                        ingredients = mutableListOf("One", "Two", "Three", "Four Five"),
+                    ),
+                )
+            },
             onDeleteClick = {},
             onAddClick = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun AddIngredientDialogPreview() {
+    CocktailBarTheme {
+        AddIngredientDialog(
+            inputText = remember { mutableStateOf("") },
+            onChangeInputText = {},
+            isError = false,
+            onAddClick = { true },
+            closeDialog = {},
         )
     }
 }

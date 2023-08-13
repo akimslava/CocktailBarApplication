@@ -289,13 +289,16 @@ private fun CocktailInformationScreenPreview() {
     CocktailBarTheme {
         CocktailInformationScreen(
             Cocktail(
-                title = "Title",
-                description = "This is description of cocktail",
+                title = "Mojito mocktail",
+                description = "To make this homemade lemonade, simply " +
+                        "combine all the ingredients in a pitcher.",
                 ingredients = mutableListOf(
-                    "9 cups water",
-                    "2 cups white sugar",
+                    "9 cups sprite",
+                    "small bunch mint",
+                    "3 limes, juiced",
                 ),
-                recipe = "Mix it all together and taste!",
+                recipe = "Muddle lime with leaves from the mint using a " +
+                        "pestle and mortar. Mix with sprite. Add ice if needed.",
             ),
             onEditClick = {},
             onBackPressed = {},

@@ -1,6 +1,5 @@
 package ru.akimslava.cocktailbar.ui.models
 
-import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,71 +23,9 @@ class HomeViewModel(
             )
 
     val currentCocktail = mutableStateOf(Cocktail())
-    private val cocktailCopy = mutableStateOf(Cocktail())
-    var isCocktailSelected = false
-        private set
 
-    val ingredient = mutableStateOf("")
-
-    fun setUri(uri: Uri) {
-        currentCocktail.value = currentCocktail.value.copy(
-            picture = uri,
-        )
-    }
-
-    fun setIngredient(newIngredient: String) {
-        ingredient.value = newIngredient
-    }
-
-    fun dropIngredient() {
-        ingredient.value = ""
-    }
-    fun selectCocktail(cocktail: Cocktail) {
+    fun setCocktail(cocktail: Cocktail) {
         currentCocktail.value = cocktail
-        cocktailCopy.value = cocktail
-        isCocktailSelected = true
-    }
-
-    fun unselectCocktail() {
-        isCocktailSelected = false
-    }
-
-    fun dropCurrentCocktail() {
-        currentCocktail.value = Cocktail()
-    }
-
-    fun cancelUpdates() {
-        currentCocktail.value = cocktailCopy.value
-    }
-
-    fun setTitle(title: String) {
-        currentCocktail.value = currentCocktail.value.copy(
-            title = title,
-        )
-    }
-
-    fun setDescription(description: String) {
-        currentCocktail.value = currentCocktail.value.copy(
-            description = description,
-        )
-    }
-
-    fun setRecipe(recipe: String) {
-        currentCocktail.value = currentCocktail.value.copy(
-            recipe = recipe,
-        )
-    }
-
-    fun addIngredient(): Boolean =
-        if (ingredient.value.isBlank() || ingredient.value.length > 30) {
-            false
-        } else {
-            currentCocktail.value.ingredients.add(ingredient.value)
-            true
-        }
-
-    fun removeIngredient(ingredient: String) {
-        currentCocktail.value.ingredients.remove(ingredient)
     }
 
     fun saveCocktail() {
@@ -97,15 +34,17 @@ class HomeViewModel(
         }
     }
 
+    fun updateCocktail() {
+        viewModelScope.launch {
+            cocktailsRepository.updateItem(currentCocktail.value)
+        }
+    }
+
     fun deleteCocktail() {
         viewModelScope.launch {
             cocktailsRepository.deleteItem(currentCocktail.value)
         }
     }
-
-    fun isCocktailDataCorrect() =
-        currentCocktail.value.title.isNotBlank() &&
-                currentCocktail.value.ingredients.isNotEmpty()
 
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
