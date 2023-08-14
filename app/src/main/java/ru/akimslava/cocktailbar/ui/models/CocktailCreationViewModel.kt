@@ -1,6 +1,5 @@
 package ru.akimslava.cocktailbar.ui.models
 
-import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,14 +14,28 @@ class CocktailCreationViewModel(
 ) : ViewModel() {
     val cocktail = mutableStateOf(cocktail)
 
-    val ingredient = mutableStateOf("")
-    val triedAdd = mutableStateOf(false)
+    private val ingredient = mutableStateOf("")
+    private val triedAddCocktail = mutableStateOf(false)
+    private val triedAddIngredient = mutableStateOf(false)
 
-    fun setPicture(newPicture: Uri?) {
+    fun setPicture(newPicture: String?) {
         cocktail.value = cocktail.value.copy(
-            picture = newPicture?.toString(),
+            picture = newPicture,
         )
     }
+
+    fun tryAddCocktail() {
+        triedAddCocktail.value = true
+    }
+
+    fun successfulAddingCocktail() {
+        triedAddCocktail.value = false
+    }
+
+    fun isTitleIncorrect(): Boolean =
+        triedAddCocktail.value && cocktail.value.title.isBlank()
+
+    fun getIngredient(): String = ingredient.value
 
     fun setIngredient(newIngredient: String) {
         ingredient.value = newIngredient
@@ -44,6 +57,9 @@ class CocktailCreationViewModel(
         )
     }
 
+    fun isIngredientsIncorrect(): Boolean =
+            triedAddCocktail.value && cocktail.value.ingredients.isEmpty()
+
     fun setRecipe(recipe: String) {
         cocktail.value = cocktail.value.copy(
             recipe = recipe,
@@ -51,14 +67,24 @@ class CocktailCreationViewModel(
     }
 
     fun addIngredient(): Boolean =
-        if (ingredient.value.isBlank() || ingredient.value.length > 30) {
-            triedAdd.value = true
+        if (isIngredientValid()) {
+            triedAddIngredient.value = true
             false
         } else {
-            cocktail.value.ingredients.add(ingredient.value)
-            triedAdd.value = false
+            val newIngredients = cocktail.value.ingredients.toMutableList()
+            newIngredients.add(ingredient.value)
+            cocktail.value = cocktail.value.copy(
+                 ingredients = newIngredients,
+            )
+            triedAddIngredient.value = false
             true
         }
+
+    fun isIngredientValid(): Boolean =
+        ingredient.value.isBlank() ||
+                ingredient.value.length > 30
+
+    fun haveTriedAddIngredient(): Boolean = triedAddIngredient.value
 
     fun removeIngredient(ingredient: String) {
         viewModelScope.launch {

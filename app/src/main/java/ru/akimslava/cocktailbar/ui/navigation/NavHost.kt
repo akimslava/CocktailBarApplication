@@ -63,7 +63,8 @@ private fun homeScreenComposable(
 ) {
     navGraphBuilder.composable(route = CocktailScreens.HomeScreen.name) {
         HomeScreen(
-            viewModel = viewModel,
+            cocktails = viewModel.homeUiState
+                .collectAsState().value.cocktailsList,
             onButtonClick = {
                 navController.navigate(
                     route = "${CocktailScreens.CreationScreen.name}/0",
@@ -71,7 +72,9 @@ private fun homeScreenComposable(
             },
             onCocktailClick = {
                 viewModel.setCocktail(it)
-                navController.navigate(route = CocktailScreens.CocktailScreen.name)
+                navController.navigate(
+                    route = CocktailScreens.CocktailScreen.name,
+                )
             },
         )
     }
@@ -91,16 +94,17 @@ private fun creationScreenComposable(
         )
     ) { navBackStackEntry ->
         val cocktailId = navBackStackEntry.arguments?.getInt("id")
+        val cocktail = if (cocktailId == 0) {
+            Cocktail()
+        } else {
+            viewModel.homeUiState.collectAsState()
+                .value.cocktailsList.find { it.id == cocktailId }
+                ?: Cocktail()
+        }
         CocktailCreationScreen(
             viewModel = viewModel(
                 factory = AppViewModelProvider.CocktailCreationFactory(
-                    cocktail = if (cocktailId == 0) {
-                        Cocktail()
-                    } else {
-                        viewModel.homeUiState.collectAsState()
-                            .value.cocktailsList.find { it.id == cocktailId }
-                            ?: Cocktail()
-                    },
+                    cocktail = cocktail,
                 ),
             ),
             onSaveClick = {
@@ -126,7 +130,7 @@ private fun cocktailInformationScreenComposable(
 ) {
     navGraphBuilder.composable(route = CocktailScreens.CocktailScreen.name) {
         CocktailInformationScreen(
-            cocktail = cocktail.value,
+            cocktail = cocktail.value.copy(),
             onEditClick = {
                 navController.navigate(
                     route = "${CocktailScreens.CreationScreen.name}/" +

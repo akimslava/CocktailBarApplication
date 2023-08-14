@@ -11,40 +11,28 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import ru.akimslava.cocktailbar.R
 import ru.akimslava.cocktailbar.domain.Cocktail
-import ru.akimslava.cocktailbar.ui.models.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel,
-    onButtonClick: () -> Unit = {},
-    onCocktailClick: (Cocktail) -> Unit = {},
+    cocktails: List<Cocktail>,
+    onButtonClick: () -> Unit,
+    onCocktailClick: (Cocktail) -> Unit,
 ) {
-    val systemUiController = rememberSystemUiController()
-    SideEffect {
-        systemUiController.setStatusBarColor(
-            color = Color.Transparent,
-            darkIcons = true,
-        )
-    }
     Scaffold(
         floatingActionButton = {
             CreationButton(onButtonClick = { onButtonClick() })
         },
         floatingActionButtonPosition = FabPosition.Center,
     ) {
-        val cocktails = viewModel.homeUiState.collectAsState().value.cocktailsList
         if (cocktails.isEmpty()) {
             NoCocktailsScreen(
                 modifier = Modifier
@@ -65,7 +53,7 @@ fun HomeScreen(
 
 @Composable
 private fun CreationButton(
-    onButtonClick: () -> Unit = {},
+    onButtonClick: () -> Unit,
 ) {
     Box {
         FloatingActionButton(

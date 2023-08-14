@@ -18,4 +18,5 @@
     <string name="no">No</string>
     <string name="yes">Yes</string>
     <string name="delete_cocktail_agreemant">Are you sure you want to remove the %s?</string>
+    <string name="at_least_one_ingredient">There has to be at least one ingredient!</string>
 </resources>
