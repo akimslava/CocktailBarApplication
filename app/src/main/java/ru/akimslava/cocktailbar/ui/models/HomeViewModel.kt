@@ -1,5 +1,6 @@
 package ru.akimslava.cocktailbar.ui.models
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,7 +23,9 @@ class HomeViewModel(
                 initialValue = HomeUiState(),
             )
 
-    val currentCocktail = mutableStateOf(Cocktail())
+    private val currentCocktail = mutableStateOf(Cocktail())
+
+    fun getCocktailState(): MutableState<Cocktail> = currentCocktail
 
     fun setCocktail(cocktail: Cocktail) {
         currentCocktail.value = cocktail

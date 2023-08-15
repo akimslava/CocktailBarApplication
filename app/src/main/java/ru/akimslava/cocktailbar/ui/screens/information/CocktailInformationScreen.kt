@@ -1,7 +1,5 @@
-package ru.akimslava.cocktailbar.ui.screens
+package ru.akimslava.cocktailbar.ui.screens.information
 
-import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +21,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -36,10 +33,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import ru.akimslava.cocktailbar.R
@@ -51,11 +46,9 @@ import java.io.File
 fun CocktailInformationScreen(
     cocktail: Cocktail,
     onEditClick: () -> Unit,
-    onBackPressed: () -> Unit,
     deleteCocktail: (Cocktail) -> Unit,
     navigateUp: () -> Unit,
 ) {
-    BackHandler(onBack = onBackPressed)
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter,
@@ -226,63 +219,6 @@ private fun InteractionRow(
     }
 }
 
-@Composable
-private fun DeleteCocktailDialog(
-    cocktailTitle: String,
-    onAcceptClick: () -> Unit,
-    onDismissRequest: () -> Unit,
-) {
-    Dialog(onDismissRequest = onDismissRequest) {
-        Card(
-            shape = RoundedCornerShape(20.dp),
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = stringResource(
-                        R.string.delete_cocktail_agreemant,
-                        cocktailTitle,
-                    ),
-                    modifier = Modifier.padding(bottom = 12.dp),
-                    style = MaterialTheme.typography.headlineMedium.copy(
-                        textAlign = TextAlign.Center,
-                    ),
-                )
-                Button(
-                    onClick = onAcceptClick,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(id = R.color.light_blue),
-                    ),
-                ) {
-                    Text(
-                        text = stringResource(R.string.yes),
-                        style = MaterialTheme.typography.displayMedium,
-                    )
-                }
-                OutlinedButton(
-                    onClick = onDismissRequest,
-                    modifier = Modifier.fillMaxWidth(),
-                    border = BorderStroke(
-                        width = 1.dp,
-                        color = colorResource(id = R.color.light_blue),
-                    )
-                ) {
-                    Text(
-                        text = stringResource(R.string.no),
-                        style = MaterialTheme.typography.displayMedium,
-                        color = colorResource(id = R.color.light_blue),
-                    )
-                }
-            }
-        }
-    }
-}
-
 @Preview
 @Composable
 private fun CocktailInformationScreenPreview() {
@@ -301,21 +237,8 @@ private fun CocktailInformationScreenPreview() {
                         "pestle and mortar. Mix with sprite. Add ice if needed.",
             ),
             onEditClick = {},
-            onBackPressed = {},
             deleteCocktail = {},
             navigateUp = {},
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun DeleteCocktailDialogPreview() {
-    CocktailBarTheme {
-        DeleteCocktailDialog(
-            cocktailTitle = "Cocktail title",
-            onAcceptClick = {},
-            onDismissRequest = {},
         )
     }
 }

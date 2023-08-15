@@ -1,4 +1,4 @@
-package ru.akimslava.cocktailbar.ui.screens
+package ru.akimslava.cocktailbar.ui.screens.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -37,12 +37,9 @@ fun NoCocktailsScreen(
                 .size(283.dp),
         )
         Text(
-            text = "My cocktails",
+            text = stringResource(id = R.string.my_cocktails),
             style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier
-                .padding(15.dp)
-                .width(187.dp)
-                .height(47.dp),
+            modifier = Modifier.padding(15.dp),
         )
         AddendumFragment()
     }

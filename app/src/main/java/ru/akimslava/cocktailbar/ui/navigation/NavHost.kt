@@ -13,9 +13,9 @@ import androidx.navigation.navArgument
 import ru.akimslava.cocktailbar.domain.Cocktail
 import ru.akimslava.cocktailbar.ui.AppViewModelProvider
 import ru.akimslava.cocktailbar.ui.models.HomeViewModel
-import ru.akimslava.cocktailbar.ui.screens.CocktailCreationScreen
-import ru.akimslava.cocktailbar.ui.screens.CocktailInformationScreen
-import ru.akimslava.cocktailbar.ui.screens.HomeScreen
+import ru.akimslava.cocktailbar.ui.screens.creation.CocktailCreationScreen
+import ru.akimslava.cocktailbar.ui.screens.home.HomeScreen
+import ru.akimslava.cocktailbar.ui.screens.information.CocktailInformationScreen
 
 enum class CocktailScreens {
     HomeScreen,
@@ -47,7 +47,7 @@ fun NavHost(
         cocktailInformationScreenComposable(
             navGraphBuilder = this,
             navController = navController,
-            cocktail = viewModel.currentCocktail,
+            cocktail = viewModel.getCocktailState(),
             deleteCocktail = {
                 viewModel.setCocktail(it)
                 viewModel.deleteCocktail()
@@ -136,9 +136,6 @@ private fun cocktailInformationScreenComposable(
                     route = "${CocktailScreens.CreationScreen.name}/" +
                             "${cocktail.value.id}",
                 )
-            },
-            onBackPressed = {
-                navController.navigateUp()
             },
             deleteCocktail = deleteCocktail,
             navigateUp = navController::navigateUp,

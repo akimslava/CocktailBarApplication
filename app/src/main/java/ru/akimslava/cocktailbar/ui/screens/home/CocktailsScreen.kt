@@ -1,4 +1,4 @@
-package ru.akimslava.cocktailbar.ui.screens
+package ru.akimslava.cocktailbar.ui.screens.home
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -29,7 +29,6 @@ import ru.akimslava.cocktailbar.R
 import ru.akimslava.cocktailbar.domain.Cocktail
 import ru.akimslava.cocktailbar.ui.theme.CocktailBarTheme
 import java.io.File
-
 
 @Composable
 fun CocktailsScreen(
@@ -92,29 +91,12 @@ private fun CocktailView(
                 text = cocktail.title,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 34.dp),
+                    .padding(bottom = 34.dp)
+                    .padding(horizontal = 8.dp),
                 maxLines = 1,
                 style = MaterialTheme.typography.titleMedium,
             )
         }
-    }
-}
-
-@Preview(
-    showBackground = true,
-    showSystemUi = true,
-)
-@Composable
-private fun CocktailsScreenPreview() {
-    CocktailBarTheme {
-        CocktailsScreen(
-            cocktails = listOf(
-                Cocktail(0, null, "Title of Cocktail", "", mutableListOf(), ""),
-                Cocktail(0, null, "Title of Cocktail", "", mutableListOf(), ""),
-                Cocktail(0,  null, "Title of Cocktail", "", mutableListOf(), ""),
-            ),
-            onClick = {},
-        )
     }
 }
 
@@ -124,13 +106,33 @@ private fun CocktailViewPreview() {
     CocktailBarTheme {
         CocktailView(
             cocktail = Cocktail(
-                id = 0,
-                picture = null,
-                title = "Title of Cocktail",
-                description = "",
-                ingredients = mutableListOf(),
-                recipe = "",
+                title = "Title of cocktail",
             ),
+            onClick = {},
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun CocktailsScreenPreview() {
+    val cocktailsList = listOf(
+        Cocktail(
+            title = "Title of Cocktail",
+        ),
+        Cocktail(
+            title = "Title of Cocktail",
+        ),
+        Cocktail(
+            title = "Title of Cocktail",
+        ),
+    )
+    CocktailBarTheme {
+        CocktailsScreen(
+            cocktails = cocktailsList,
             onClick = {},
         )
     }

@@ -1,4 +1,4 @@
-package ru.akimslava.cocktailbar.ui.screens
+package ru.akimslava.cocktailbar.ui.screens.home
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,19 +33,16 @@ fun HomeScreen(
         },
         floatingActionButtonPosition = FabPosition.Center,
     ) {
+        val modifier = Modifier.padding(it).fillMaxSize()
         if (cocktails.isEmpty()) {
             NoCocktailsScreen(
-                modifier = Modifier
-                    .padding(it)
-                    .fillMaxSize(),
+                modifier = modifier,
             )
         } else {
             CocktailsScreen(
                 cocktails = cocktails,
                 onClick = onCocktailClick,
-                modifier = Modifier
-                    .padding(it)
-                    .fillMaxSize(),
+                modifier = modifier,
             )
         }
     }
