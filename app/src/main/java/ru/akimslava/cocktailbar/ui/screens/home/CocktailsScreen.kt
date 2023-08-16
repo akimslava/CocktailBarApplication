@@ -3,10 +3,13 @@ package ru.akimslava.cocktailbar.ui.screens.home
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -37,14 +40,17 @@ fun CocktailsScreen(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.padding(
+            top = WindowInsets.systemBars
+            .asPaddingValues()
+            .calculateBottomPadding(),
+        ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = stringResource(id = R.string.my_cocktails),
             modifier = Modifier.padding(
-                top = 24.dp,
-                bottom = 24.dp,
+                vertical = 24.dp,
             ),
             style = MaterialTheme.typography.headlineLarge,
         )
