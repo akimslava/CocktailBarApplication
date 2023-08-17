@@ -1,6 +1,8 @@
 package ru.akimslava.cocktailbar.ui.screens.home
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.Intent.createChooser
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,10 +19,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
+import ru.akimslava.cocktailbar.R
 import ru.akimslava.cocktailbar.domain.Cocktail
 import ru.akimslava.cocktailbar.ui.theme.CocktailBarTheme
 
@@ -31,6 +37,7 @@ fun HomeScreen(
     onButtonClick: () -> Unit,
     onCocktailClick: (Cocktail) -> Unit,
 ) {
+    val context = LocalContext.current
     Scaffold(
         bottomBar = {
             BottomBar()
@@ -51,9 +58,25 @@ fun HomeScreen(
                 modifier = modifier,
             )
         } else {
+            val intentText = stringResource(
+                R.string.share_cocktails_intent,
+                cocktails.takeLast(4).joinToString(", ") { it.title },
+            )
+            val intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, intentText)
+                type = "text/plain"
+            }
             CocktailsScreen(
                 cocktails = cocktails,
                 onClick = onCocktailClick,
+                onShareClick = {
+                    startActivity(
+                        context,
+                        createChooser(intent, null),
+                        null,
+                    )
+                },
                 modifier = modifier,
             )
         }
@@ -87,13 +110,13 @@ private fun CreationButton(
         modifier = Modifier.size(80.dp),
         shape = CircleShape,
         containerColor = colorResource(
-            id = ru.akimslava.cocktailbar.R.color.light_blue,
+            id = R.color.light_blue,
         ),
         contentColor = Color.White,
     ) {
         Icon(
             painter = painterResource(
-                id = ru.akimslava.cocktailbar.R.drawable.frame,
+                id = R.drawable.frame,
             ),
             contentDescription = null,
         )

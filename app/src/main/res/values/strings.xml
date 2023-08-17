@@ -19,4 +19,5 @@
     <string name="yes">Yes</string>
     <string name="delete_cocktail_agreemant">Are you sure you want to remove the %s?</string>
     <string name="at_least_one_ingredient">There has to be at least one ingredient!</string>
+    <string name="share_cocktails_intent">Check out the cocktails I created in the Cocktail Bar app!\n%s and more.\nWant to try one?</string>
 </resources>

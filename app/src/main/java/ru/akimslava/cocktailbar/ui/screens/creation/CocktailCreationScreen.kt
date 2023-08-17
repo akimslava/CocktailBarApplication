@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.ContentScale
@@ -210,7 +211,7 @@ private fun ImageSelect(
             modifier = Modifier
                 .height(204.dp)
                 .width(216.dp)
-                .fillMaxWidth()
+                .clip(RoundedCornerShape(54.dp))
                 .clickable {
                     launcher.launch("image/*")
                 },

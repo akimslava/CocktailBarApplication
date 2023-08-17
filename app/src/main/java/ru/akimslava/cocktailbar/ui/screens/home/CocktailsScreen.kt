@@ -3,6 +3,8 @@ package ru.akimslava.cocktailbar.ui.screens.home
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +17,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,23 +41,38 @@ import java.io.File
 fun CocktailsScreen(
     cocktails: List<Cocktail>,
     onClick: (Cocktail) -> Unit,
+    onShareClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.padding(
             top = WindowInsets.systemBars
-            .asPaddingValues()
-            .calculateBottomPadding(),
+                .asPaddingValues()
+                .calculateBottomPadding(),
         ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(
-            text = stringResource(id = R.string.my_cocktails),
+        Row(
             modifier = Modifier.padding(
                 vertical = 24.dp,
             ),
-            style = MaterialTheme.typography.headlineLarge,
-        )
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Spacer(modifier = Modifier.weight(2f))
+            Text(
+                text = stringResource(id = R.string.my_cocktails),
+                style = MaterialTheme.typography.headlineLarge,
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(
+                onClick = onShareClick,
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_share),
+                    contentDescription = null,
+                )
+            }
+        }
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier.padding(12.dp),
@@ -89,7 +108,8 @@ private fun CocktailView(
                 contentDescription = null,
                 placeholder = painterResource(id = R.drawable.ic_image_search),
                 error = painterResource(id = R.drawable.ic_no_image),
-                modifier = Modifier.height(329.dp)
+                modifier = Modifier
+                    .height(329.dp)
                     .fillMaxWidth(),
                 contentScale = ContentScale.Crop,
             )
@@ -140,6 +160,7 @@ private fun CocktailsScreenPreview() {
         CocktailsScreen(
             cocktails = cocktailsList,
             onClick = {},
+            onShareClick = {},
         )
     }
 }
