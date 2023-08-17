@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import ru.akimslava.cocktailbar.domain.Cocktail
 import ru.akimslava.cocktailbar.domain.CocktailsRepository
+import ru.akimslava.cocktailbar.domain.deleteImage
 
 class HomeViewModel(
     private val cocktailsRepository: CocktailsRepository,
@@ -46,6 +47,16 @@ class HomeViewModel(
     fun deleteCocktail() {
         viewModelScope.launch {
             cocktailsRepository.deleteItem(currentCocktail.value)
+        }
+    }
+
+    fun checkAndDeletePicture() {
+        if (currentCocktail.value.picture != null) {
+            viewModelScope.launch {
+                if (!cocktailsRepository.hasSameImage(currentCocktail.value)) {
+                    deleteImage(currentCocktail.value.picture!!)
+                }
+            }
         }
     }
 

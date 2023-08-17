@@ -52,6 +52,7 @@ fun NavHost(
                 viewModel.setCocktail(it)
                 viewModel.deleteCocktail()
             },
+            checkAndDeletePicture = viewModel::checkAndDeletePicture,
         )
     }
 }
@@ -127,6 +128,7 @@ private fun cocktailInformationScreenComposable(
     navController: NavHostController,
     cocktail: MutableState<Cocktail>,
     deleteCocktail: (Cocktail) -> Unit,
+    checkAndDeletePicture: () -> Unit,
 ) {
     navGraphBuilder.composable(route = CocktailScreens.CocktailScreen.name) {
         CocktailInformationScreen(
@@ -138,6 +140,7 @@ private fun cocktailInformationScreenComposable(
                 )
             },
             deleteCocktail = deleteCocktail,
+            checkAndDeletePicture = checkAndDeletePicture,
             navigateUp = navController::navigateUp,
         )
     }

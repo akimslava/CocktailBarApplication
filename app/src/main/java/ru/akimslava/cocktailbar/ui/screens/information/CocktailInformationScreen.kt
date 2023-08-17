@@ -47,6 +47,7 @@ fun CocktailInformationScreen(
     cocktail: Cocktail,
     onEditClick: () -> Unit,
     deleteCocktail: (Cocktail) -> Unit,
+    checkAndDeletePicture: () -> Unit,
     navigateUp: () -> Unit,
 ) {
     Box(
@@ -79,6 +80,7 @@ fun CocktailInformationScreen(
                     cocktail = cocktail,
                     onEditClick = onEditClick,
                     deleteCocktail = deleteCocktail,
+                    checkAndDeletePicture = checkAndDeletePicture,
                     navigateUp = navigateUp,
                 )
             }
@@ -91,6 +93,7 @@ private fun InformationPart(
     cocktail: Cocktail,
     onEditClick: () -> Unit,
     deleteCocktail: (Cocktail) -> Unit,
+    checkAndDeletePicture: () -> Unit,
     navigateUp: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
@@ -99,6 +102,7 @@ private fun InformationPart(
         DeleteCocktailDialog(
             cocktailTitle = cocktail.title,
             onAcceptClick = {
+                checkAndDeletePicture()
                 deleteCocktail(cocktail)
                 openDialog.value = false
                 navigateUp()
@@ -206,7 +210,9 @@ private fun InteractionRow(
             )
         }
         IconButton(
-            onClick = onDeleteClick,
+            onClick = {
+                onDeleteClick()
+            },
             modifier = Modifier.weight(1f),
         ) {
             Icon(
@@ -238,6 +244,7 @@ private fun CocktailInformationScreenPreview() {
             ),
             onEditClick = {},
             deleteCocktail = {},
+            checkAndDeletePicture = {},
             navigateUp = {},
         )
     }

@@ -24,4 +24,7 @@ interface CocktailDao {
 
     @Query("SELECT * from cocktails")
     fun getAllCocktails(): Flow<List<CocktailEntity>>
+
+    @Query("SELECT * from cocktails WHERE picture = :picture")
+    suspend fun getCocktailsWithSamePicture(picture: String?): List<CocktailEntity>
 }

@@ -27,4 +27,7 @@ class OfflineCocktailsRepository(
 
     override suspend fun deleteItem(item: Cocktail) =
         cocktailDao.delete(item.toCocktailEntity())
+
+    override suspend fun hasSameImage(item: Cocktail): Boolean =
+        cocktailDao.getCocktailsWithSamePicture(item.picture).size > 1
 }

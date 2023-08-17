@@ -12,4 +12,6 @@ interface CocktailsRepository {
     suspend fun updateItem(item: Cocktail)
 
     suspend fun deleteItem(item: Cocktail)
+
+    suspend fun hasSameImage(item: Cocktail): Boolean
 }

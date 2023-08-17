@@ -2,6 +2,9 @@ package ru.akimslava.cocktailbar.domain
 
 import android.content.Context
 import android.net.Uri
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.File
 
 fun saveImageToInternalStorage(
     context: Context,
@@ -16,3 +19,8 @@ fun saveImageToInternalStorage(
         }
     }
 }
+
+suspend fun deleteImage(filePath: String) =
+    withContext(Dispatchers.IO) {
+        File(filePath).delete()
+    }
