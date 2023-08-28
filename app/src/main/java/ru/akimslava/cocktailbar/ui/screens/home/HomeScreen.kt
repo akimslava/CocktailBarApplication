@@ -96,7 +96,7 @@ private fun BottomBar() {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val height = 62.dp
     val circleRadius = 50.dp
-    val cutoutSize = (circleRadius + 2.dp) * 2
+    val cutoutSize = (circleRadius + 1.dp) * 2
     val borderColor = Color.LightGray
     Canvas(
         modifier = Modifier

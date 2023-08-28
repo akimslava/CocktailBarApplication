@@ -1,8 +1,11 @@
 package ru.akimslava.cocktailbar.ui.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -86,13 +89,26 @@ private fun creationScreenComposable(
     navController: NavHostController,
     viewModel: HomeViewModel,
 ) {
+    val animationSpec = tween<IntOffset>(durationMillis = 500)
     navGraphBuilder.composable(
         route = "${CocktailScreens.CreationScreen.name}/{id}",
         arguments = listOf(
             navArgument("id") {
                 type = NavType.IntType
             }
-        )
+        ),
+        enterTransition = {
+            slideIntoContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Start,
+                animationSpec = animationSpec,
+            )
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.End,
+                animationSpec = animationSpec,
+            )
+        }
     ) { navBackStackEntry ->
         val cocktailId = navBackStackEntry.arguments?.getInt("id")
         val cocktail = if (cocktailId == 0) {
@@ -130,7 +146,34 @@ private fun cocktailInformationScreenComposable(
     deleteCocktail: (Cocktail) -> Unit,
     checkAndDeletePicture: () -> Unit,
 ) {
-    navGraphBuilder.composable(route = CocktailScreens.CocktailScreen.name) {
+    val animationSpec = tween<IntOffset>(durationMillis = 500)
+    navGraphBuilder.composable(
+        route = CocktailScreens.CocktailScreen.name,
+        enterTransition = {
+            slideIntoContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Up,
+                animationSpec = animationSpec,
+            )
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Start,
+                animationSpec = animationSpec,
+            )
+        },
+        popEnterTransition = {
+            slideIntoContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.End,
+                animationSpec = animationSpec,
+            )
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Down,
+                animationSpec = animationSpec,
+            )
+        },
+    ) {
         CocktailInformationScreen(
             cocktail = cocktail.value.copy(),
             onEditClick = {

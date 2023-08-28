@@ -55,7 +55,7 @@ fun IngredientsLine(
                 .fillMaxWidth()
                 .padding(bottom = 24.dp),
             horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
+            verticalArrangement = Arrangement.Center,
         ) {
             repeat(ingredients.size) {
                 if (it == ingredients.lastIndex) {
