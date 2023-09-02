@@ -52,37 +52,45 @@ fun CocktailsScreen(
         ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Row(
-            modifier = Modifier.padding(
-                vertical = 24.dp,
-            ),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Spacer(modifier = Modifier.weight(2f))
-            Text(
-                text = stringResource(id = R.string.my_cocktails),
-                style = MaterialTheme.typography.headlineLarge,
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(
-                onClick = onShareClick,
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_share),
-                    contentDescription = null,
-                )
-            }
-        }
+        TopBar(onShareClick = onShareClick)
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier.padding(12.dp),
         ) {
             items(cocktails) { cocktail ->
+                val isLast = cocktail == cocktails.last()
                 CocktailView(
                     cocktail = cocktail,
                     onClick = onClick,
+                    modifier = if (!isLast) Modifier
+                    else Modifier.padding(bottom = 62.dp),
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun TopBar(onShareClick: () -> Unit) {
+    Row(
+        modifier = Modifier.padding(
+            vertical = 24.dp,
+        ),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Spacer(modifier = Modifier.weight(2f))
+        Text(
+            text = stringResource(id = R.string.my_cocktails),
+            style = MaterialTheme.typography.headlineLarge,
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        IconButton(
+            onClick = onShareClick,
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_share),
+                contentDescription = null,
+            )
         }
     }
 }
@@ -91,9 +99,10 @@ fun CocktailsScreen(
 private fun CocktailView(
     cocktail: Cocktail,
     onClick: (Cocktail) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .size(160.dp)
             .padding(4.dp)
             .clickable { onClick(cocktail) },
