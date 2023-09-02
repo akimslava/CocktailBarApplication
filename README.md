@@ -5,22 +5,23 @@ Application for summer school Surf
 2. Хранение - Room
 3. Использовал MVVM, compose
 
-от себя добавлю, что `мог реализовать всё, кроме контейнера для FAB`, но по времени не уложился, буквально немного (для поделиться сделать пятистрочный Интент, для удаления реализовал на 5 минут позже диалог с кнопками, такой вот я клоун 🤡)
-
-и на всякий случай уточню, что императивный UI тоже знаю, но последние пару месяцев увлекся декларативным
-
-# Коктейли отсутствуют
-![image](https://github.com/akimslava/CocktailBarApplication/assets/71608501/18587230-cc4a-49d4-9c7c-ee1c100d15ae)
+# Пустой экран
+![EmptyCocktailsScreen](https://github.com/akimslava/CocktailBarApplication/assets/71608501/777319a4-b33a-4ae6-8d67-09cc803da885)
 
 # Добавление коктейля
-![image](https://github.com/akimslava/CocktailBarApplication/assets/71608501/474e7f20-01ef-4c25-a95f-bc6dd2644619)
+![CocktailAdding](https://github.com/akimslava/CocktailBarApplication/assets/71608501/4a54e0fe-1ded-4f53-a6c6-a981e8024f9e)
 
-# Есть коктейли
-![image](https://github.com/akimslava/CocktailBarApplication/assets/71608501/57cc723f-9c6f-4ec5-93f9-9e67420650a3)
+# Изменение коктейля
+![CocktailEditing](https://github.com/akimslava/CocktailBarApplication/assets/71608501/4f4e92e9-628e-4673-b45c-c94ca142a4f2)
 
-# Редачим коктейль
-![image](https://github.com/akimslava/CocktailBarApplication/assets/71608501/26aff87d-8821-4812-9a57-6bdf78a9fcb2)
+# Удаление коктейля
+![CocktailDeleting](https://github.com/akimslava/CocktailBarApplication/assets/71608501/25b06060-536b-453c-82e0-cfeb1b99115b)
 
-#  Коктейль детаилс
-(на иконку мусора не смотрите, я ее поздно реализовал, поэтому некрасивая, но рабочая!)
-![image](https://github.com/akimslava/CocktailBarApplication/assets/71608501/acd92874-da82-47b5-9aa2-39d6686a50f7)
+# Пролистывание
+![ScrollCocktailsBehavior](https://github.com/akimslava/CocktailBarApplication/assets/71608501/29bf0d96-1866-4bde-95ca-cacffccb00b9)
+
+# Поделиться коктейлями
+![ShareIntent](https://github.com/akimslava/CocktailBarApplication/assets/71608501/c579d60e-1131-4e52-9d59-fd083214a7e3)
+
+#  Валидация при создании
+![InputValidation](https://github.com/akimslava/CocktailBarApplication/assets/71608501/27da65d7-76ab-47af-83ab-4645c50c2142)
